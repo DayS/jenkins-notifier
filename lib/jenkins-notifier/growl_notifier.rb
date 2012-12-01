@@ -5,7 +5,7 @@ module JenkinsNotifier
     end
 
     def notify
-      `#{self.class.command} --icon "#{@presenter.icon_pathname}" --message "#{@presenter.message}" --title "#{@presenter.title}"`
+      `#{self.class.command} --sticky --icon "#{@presenter.icon_pathname}" --message "#{@presenter.message}" --title "#{@presenter.title}"`
     end
   end
 end
