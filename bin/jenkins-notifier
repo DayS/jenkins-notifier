@@ -1,0 +1,9 @@
+#! /bin/bash
+
+BIN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+LIB_DIR="$BIN_DIR/../lib"
+LOG_DIR="$BIN_DIR/../log"
+
+mkdir -p "$LOG_DIR"
+
+ruby "$LIB_DIR/jenkins-notifier.rb" >> "$LOG_DIR/jenkins-notifier.log" 2>&1 &

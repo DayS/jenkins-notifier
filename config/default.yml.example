@@ -1,0 +1,15 @@
+url: http://jenkins.example.com/
+statuses:
+- success
+- failure
+interval: 15
+notifier: growl
+jobs:
+- name: foo-bar-baz
+  nickname: foo
+- name: qux
+  statuses:
+  - building
+  - success
+  - failure
+  - aborted
