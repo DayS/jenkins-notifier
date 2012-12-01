@@ -20,6 +20,8 @@ module JenkinsNotifier
         Images.success_pathname
       elsif @build_status.building?
         Images.building_pathname
+      elsif @build_status.aborted?
+        Images.aborted_pathname
       else
         Images.failure_pathname
       end

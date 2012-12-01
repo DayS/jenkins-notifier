@@ -12,6 +12,10 @@ module JenkinsNotifier
       images_pathname + "heartbeat.png"
     end
 
+    def self.aborted_pathname
+      images_pathname + "boom.png"
+    end
+
     def self.images_pathname
       Config.root_pathname + "images"
     end
