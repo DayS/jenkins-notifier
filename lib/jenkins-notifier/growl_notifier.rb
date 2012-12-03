@@ -5,7 +5,14 @@ module JenkinsNotifier
     end
 
     def notify
-      `#{self.class.command} --sticky --image "#{@presenter.icon_pathname}" --message "#{@presenter.message}" --title "#{@presenter.title}"`
+      Thread.new do
+        `#{self.class.command} -w --image "#{@presenter.icon_pathname}" --message "#{@presenter.message}" --title "#{@presenter.title}"`
+
+        # growlnotify returns exit code 2 if the notification is clicked
+        if $?.exitstatus == 2
+          `open #{@presenter.url}`
+        end
+      end
     end
   end
 end

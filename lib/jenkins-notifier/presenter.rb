@@ -34,5 +34,9 @@ module JenkinsNotifier
     def bullet
       "\u2022"
     end
+
+    def url
+      "#{Config.uri}job/#{@job.name}/#{@build_status.number}/console"
+    end
   end
 end
