@@ -7,7 +7,7 @@ Polls Jenkins jobs for changes, then uses Growl or Ubuntu's notifier.
 ## Dependencies
 
 * Ruby 1.9
-* Mac OS X: [Growl](http://growl.info/) with [growlnotify](http://growl.info/extras.php#growlnotify) [[download](https://github.com/paperlesspost/jenkins-notifier/blob/master/setup/growlnotify.pkg)]
+* Mac OS X: [Growl](http://growl.info/) with [growlnotify](http://growl.info/extras.php#growlnotify) \[[1.2](https://github.com/paperlesspost/jenkins-notifier/blob/master/setup/growlnotify-1.2.pkg)\] \[[1.3](https://github.com/paperlesspost/jenkins-notifier/blob/master/setup/growlnotify-1.3.zip)\]
 * Ubuntu: [notify-send](http://manpages.ubuntu.com/manpages/gutsy/man1/notify-send.1.html) (ships with 12.04)
 
 ## Installation
