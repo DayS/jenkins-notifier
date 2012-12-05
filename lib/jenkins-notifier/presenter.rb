@@ -28,7 +28,7 @@ module JenkinsNotifier
     end
 
     def changeset
-      @build_status.changeset["items"].map { |item| "#{bullet} #{item["comment"]}" }.join
+      @build_status.changeset["items"].map { |item| "#{bullet} #{item["comment"]}" }.first(10).join
     end
 
     def bullet
