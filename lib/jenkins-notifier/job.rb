@@ -6,43 +6,64 @@ module JenkinsNotifier
                 :nickname
 
     def initialize(name, nickname, statuses)
-      @name = name
+      @name     = name
       @nickname = nickname || @name
       @statuses = statuses
 
-      @last_build_status = BuildStatus.new
-      @current_build_status = BuildStatus.new
+      @build_statuses = BuildStatuses.new
     end
 
     def changed?
-      (@current_build_status != @last_build_status).tap do |changed|
-        changed ? log("changed") : log("not changed")
-      end
+      changed = @build_statuses.changed?
+      changed ? log("changed") : log("not changed")
+
+      changed
     end
 
     def notify(notifier)
-      if @statuses.include? @current_build_status
-        log "notifying"
-      else
-        log "ignoring"
-        return
+      return unless changed?
+
+      @build_statuses.changed.each do |build_status|
+        if notify?(build_status)
+          log "notifying"
+        else
+          log "ignoring"
+          next
+        end
+
+        notifier.new(self, build_status).notify
       end
-
-      notifier = notifier.new(self, @current_build_status)
-      notifier.notify
     end
 
-    def update_current_build_status
-      log "updating current build status"
-      @current_build_status = Jenkins.last_build_status(self)
+    def notify?(build_status)
+      @statuses.include?(build_status)
     end
 
-    def update_last_build_status
-      @last_build_status = @current_build_status
+    # Resets the build statuses instance. Called after all notifications have
+    # been sent.
+    def reset_build_statuses
+      @build_statuses.reset
+    end
+
+    # Shovels the last *and* next-to-last build statuses into the
+    # BuildStatuses instance. The reason the next-to-last build status is
+    # needed is to capture the state of a job that transitions from one build
+    # immediately to the next (please see issue #3).
+    def update_build_statuses
+      log "updating build statuses"
+      last_build_status = Jenkins.last_build_status(self)
+      @build_statuses << last_build_status
+      @build_statuses << previous_build_status(last_build_status)
+    end
+
+    def previous_build_status(build_status)
+      build_number = build_status.previous_number
+
+      previous_build_status = Jenkins.build_status(self, build_number) if build_number
     end
 
     def log(message)
-      logger.debug "#{@nickname}: #{message}"
+      logger.debug(@nickname) { message }
     end
   end
 end

@@ -49,6 +49,12 @@ module JenkinsNotifier
       @api["number"].to_i
     end
 
+    def previous_number
+      number = self.number - 1
+
+      number if number > 0
+    end
+
     def changeset
       @api["changeSet"]
     end
@@ -56,6 +62,8 @@ module JenkinsNotifier
     # Returns true if two build statuses are considered equivalent, false if
     # not.
     def ==(build_status)
+      return if build_status.nil?
+
       # If both statuses have an ID, use it in the comparison.
       if id and build_status.id
         [id, self.to_sym] == [build_status.id, build_status.to_sym]
@@ -63,6 +71,14 @@ module JenkinsNotifier
       else
         self.to_sym == build_status.to_sym
       end
+    end
+
+    # To support Array#- operations.
+    alias_method :eql?, :==
+
+    # To support Array#- operations.
+    def hash
+      id.hash
     end
   end
 end
