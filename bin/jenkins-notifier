@@ -3,7 +3,36 @@
 BIN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LIB_DIR="$BIN_DIR/../lib"
 LOG_DIR="$BIN_DIR/../log"
+PID_FILE="$BIN_DIR/../.pid"
 
-mkdir -p "$LOG_DIR"
+if [ $1 = "start" ]; then 
+	if [ -f "$PID_FILE" ]; then
+		echo "jenkins-notifier was already started"
+	else
+		mkdir -p "$LOG_DIR"
 
-ruby "$LIB_DIR/jenkins-notifier.rb" >> "$LOG_DIR/jenkins-notifier.log" 2>&1 &
+		launchctl export
+
+		/usr/local/opt/ruby/bin/ruby "$LIB_DIR/jenkins-notifier.rb" >> "$LOG_DIR/jenkins-notifier.log" 2>&1 &
+		echo $! > "$PID_FILE"
+
+	    echo "jenkins-notifier was successfully started"
+	fi
+
+elif [ $1 = "stop" ]; then 
+	if [ -f "$PID_FILE" ]; then
+	    PID=`cat "$PID_FILE"`
+		kill -9 "$PID"
+
+		rm -f "$PID_FILE" >/dev/null 2>&1
+		if [ $? != 0 ]; then
+	    	echo "jenkins-notifier was killed but the PID file could not be removed."
+	    else
+	    	echo "jenkins-notifier was successfully killed"
+	    fi
+	else
+		echo "jenkins-notifier wasn't started"
+	fi
+else
+	echo "jenkins-notifier should be stated with 'start' or 'stop' parameter"
+fi
